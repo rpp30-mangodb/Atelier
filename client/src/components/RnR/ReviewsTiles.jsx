@@ -98,7 +98,7 @@ class ReviewsTiles extends React.Component {
       if (starFilter.includes(item.rating) || starFilter.length === 0) {
         if (index > this.state.reviewDisplay - 1) { return; }
         reviewCount = sortedReviews.length;
-
+        console.log('ReviewsTiles L 101-->', item);
         return (
           <div className="individualReviewBox" key={index}>
             <div id="starsUsernameDate" className="tileBody">

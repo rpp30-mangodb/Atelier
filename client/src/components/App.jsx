@@ -26,7 +26,7 @@ class App extends React.Component {
     // this.idd = 47425
     super(props);
     this.state = {
-      productId: 47425,
+      productId: 5001,
       displayProduct: DefaultState.displayProduct,
       displayStyles: DefaultState.diplayStyles,
       reviews: DefaultState.reviews,
@@ -48,7 +48,7 @@ class App extends React.Component {
   formatBody(method, apiRoute, params = {}, data = {}) {
     let bodyObj = {
       method: method,
-      url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp${apiRoute}`,
+      url: `http://localhost:8080${apiRoute}`,
       data: data,
       params: params,
       headers: { Authorization: '' },
@@ -83,24 +83,25 @@ class App extends React.Component {
     let productId = window.location.pathname.substring(1);
     productId = Number(productId);
     if (productId === 0) {
-      this.setState({ didUpdate: true, productId: 47425 });
+      this.setState({ didUpdate: true, productId: 5002 });
       return;
     }
     let compare = this.state.productId;
     let truth = productId === compare;
-    console.log('Product ID is: ', productId);
+    console.log('Product ID is---->: ', productId);
     if (!truth) {
-      console.log('GET New Product info and styles');
+      console.log('GET New Product info and styles',productId);
       axios
         .get(`/detailState/products/${productId}`)
         .then((results) => {
-          console.log('results', results.data);
-          let styles = results.data[1].results;
+          console.log('results from API L97', results.data);
+          // [[],[],[]]
+          // let styles = results.data[1].results;
 
-          if (!styles.length) {
-            console.log('no length to this style ');
-          }
-
+          // if (!styles.length) {
+          //   console.log('no length to this style ');
+          // }
+          console.log('checking--L103>', results.data[2].results);
           // const starRatingObj = results.data[3].ratings;
           const starRatingObj = this.productAverageRating(
             results.data[2].results
@@ -127,11 +128,11 @@ class App extends React.Component {
           }
 
           this.setState({
-            displayProduct: results.data[0],
+            // displayProduct: results.data[0],
             didUpdate: true,
-            productId: results.data[0].id,
-            displayStyles: results.data[1].results,
-            productName: results.data[0].name,
+            // productId: results.data[0].id,
+            // displayStyles: results.data[1].results,
+            // productName: results.data[0].name,
             reviews: results.data[2],
             ratings: results.data[3],
             productRating: starRating,
@@ -143,7 +144,7 @@ class App extends React.Component {
         })
         .catch((err) => {
           console.log('error', err);
-          this.setState({ productId: 47425, didUpdate: true });
+          this.setState({ productId: 5001, didUpdate: true });
         });
     } else {
       let originalState = this.state;
@@ -154,6 +155,7 @@ class App extends React.Component {
   }
 
   productAverageRating(reviewsData) {
+    console.log('l157--->', reviewsData);
     /*CREATES REVIEW COUNT ON REVIEW DATA NOT META*/
     let newObj = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
 
@@ -272,12 +274,7 @@ class App extends React.Component {
               validProduct={this.state.displayStyles}
             /> */}
 
-            <QuestionsNAnswersContainer
-              formatBody={this.formatBody}
-              productId={this.state.productId}
-              productName={this.state.productName}
-              displayStyles={this.state.displayStyles}
-            />
+
 
             <RnR
               validProduct={this.state.displayStyles}
