@@ -44,7 +44,7 @@ const upload = multer({ storage: storage });
 
 // router for handling valid products url string
 app.get('/detailState/*', async (req, res) => {
-  let base = 'http://localhost:8080/';
+  let base = 'http://54.167.63.68/';
   console.log('l48-->', req.url, 'and', req.params);
   base += `/${req.params['0']}`;
 
@@ -101,7 +101,7 @@ app.get('/detailState/*', async (req, res) => {
 });
 // Router handler for processing api endpoints
 app.all('/api/*', (req, res) => {
-  let base = 'http://54.167.63.68:8080';
+  let base = 'http://54.167.63.68';
   let method = req.method;
   let url = req.url.substring(4);
   let query = req.query;
