@@ -48,7 +48,7 @@ class App extends React.Component {
   formatBody(method, apiRoute, params = {}, data = {}) {
     let bodyObj = {
       method: method,
-      url: `http://localhost:8080${apiRoute}`,
+      url: `http://54.167.63.68/${apiRoute}`,
       data: data,
       params: params,
       headers: { Authorization: '' },
