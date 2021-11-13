@@ -23,6 +23,7 @@ class Question extends React.Component {
   }
 
   componentDidMount() {
+    console.log('question', this.props.question);
     this._isMounted = true;
     const {formatBody} = this.props;
     const {question_id: questionId} = this.props.question;
@@ -32,8 +33,9 @@ class Question extends React.Component {
     };
     const body = formatBody(null, null, params);
     const allAnswers = [];
-    axios.get(`/api/qa/questions/${questionId}/answers`, body)
+    axios.get(`api/qa/questions/${questionId}/answers`, body)
       .then((answerList) => {
+        console.log('answer results', answerList.data.results);
         const ansList = answerList.data.results;
         const sellerAnswers = ansList.filter((ans) => {
           return ans.answerer_name === 'Seller' || ans.answerer_name === 'seller';
@@ -89,18 +91,17 @@ class Question extends React.Component {
     });
   }
 
-  addNewAnswer(answerBody, name, email, photos) {
+  addNewAnswer(answerBody, name, email, photos, e) {
     const data = {
       body: answerBody,
       name: name,
       email: email,
       photos: photos
     };
-
     const {formatBody} = this.props;
     const {question_id: questionId} = this.props.question;
     const body = formatBody(null, null, null, data);
-    axios.post(`/api/qa/questions/${questionId}/answers`, body.data)
+    axios.post(`api/qa/questions/${questionId}/answers`, body.data)
       .then((result) => {
         console.log('Successfully posted a new answer', result.data);
       })
@@ -123,7 +124,7 @@ class Question extends React.Component {
       // call the api to mark it as helpful
       const {formatBody} = this.props;
       const {question_id: questionId} = this.props.question;
-      axios.put(`/api/qa/questions/${questionId}/helpful`)
+      axios.put(`api/qa/questions/${questionId}/helpful`)
         .then((result) => {
           console.log('Successful:');
         })
@@ -138,9 +139,12 @@ class Question extends React.Component {
     const {question_body: questionBody} = this.props.question;
 
     const allAnswers = this.state.answerList.map((answer) => {
-      return (
-        <Answer key={answer.answer_id} answer={answer} formatBody={this.props.formatBody}/>
-      );
+      console.log(answer.answer_id);
+      if (answer.answer_id !== undefined) {
+        return (
+          <Answer key={answer.answer_id} answer={answer} formatBody={this.props.formatBody}/>
+        );
+      }
     });
 
     return (
@@ -160,9 +164,11 @@ class Question extends React.Component {
           /> }
         </div>
         {this.state.answerList.length <= 2 && this.state.answerList.map((answer) => {
-          return (
-            <Answer key={answer.answer_id} answer={answer} formatBody={this.props.formatBody}/>
-          );
+          if (answer.answer_id !== undefined) {
+            return (
+              <Answer key={answer.answer_id} answer={answer} formatBody={this.props.formatBody}/>
+            );
+          }
         })}
         {this.state.answerList.length > 2 && this.state.loadMoreAnswer === false &&
         <div>

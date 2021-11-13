@@ -28,7 +28,7 @@ class Answer extends React.Component {
       // call the answer helpfulness api endpoint
       const {formatBody} = this.props;
       const {answer_id: answerId} = this.props.answer;
-      axios.put(`/api/qa/answers/${answerId}/helpful`)
+      axios.put(`api/qa/answers/${answerId}/helpful`)
         .then((results) => {
           console.log('Successful');
         })
@@ -60,7 +60,7 @@ class Answer extends React.Component {
     // call api endpoint to report the answer
     const {formatBody} = this.props;
     const {answer_id: answerId} = this.props.answer;
-    axios.put(`/api/qa/answers/${answerId}/report`)
+    axios.put(`api/qa/answers/${answerId}/report`)
       .then((results) => {
         console.log('Successfully Reported the answer');
       })
@@ -88,13 +88,15 @@ class Answer extends React.Component {
           </p>
         </div>
         {this.state.showImageModal && <ImageModal source={this.state.clickedImageUrl} onCancel={this.onCancel}/>}
-        <div className="answer-photos">
-          {answer.photos.map((photo, index) => {
-            return (
-              <img className="answer-img" key={photo.id} alt={`img-${index}`} src={photo.url} onClick={() => this.showImageModal(photo.url)}/>
-            );
-          })}
-        </div>
+        { !answer.photos ? null :
+          <div className="answer-photos">
+            {answer.photos.map((photo, index) => {
+              return (
+                <img className="answer-img" key={photo.id} alt={`img-${index}`} src={photo.url} onClick={() => this.showImageModal(photo.url)}/>
+              );
+            })}
+          </div>
+        }
         <div className="answer-info">
           <div>
             <p>by {answer.answerer_name === 'Seller' ? <span style={{fontWeight: 'bold'}}>{answer.answerer_name}</span> : answer.answerer_name},</p>

@@ -45,20 +45,22 @@ const s3 = new AWS.S3({
 // router for handling valid products url string
 app.get('/detailState/*', async (req, res) => {
   let base = 'https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp';
-  console.log(req.url, req.params);
+  // console.log(req.url, req.params);
   base += `/${req.params['0']}`;
 
   let indexOfProductId = req.params['0'].indexOf('/');
   let productId = req.params['0'].slice(indexOfProductId + 1);
 
-  console.log('PRODID', req.body);
+  // console.log('PRODID', req.body);
   let optionsReviews = {
     method: 'GET',
+    url: base + '/reviews?product_id=${productId}&count=100',
     url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/reviews?product_id=${productId}&count=100`,
     headers: { Authorization: TOKEN },
   };
   let optionsReviewsMeta = {
     method: 'GET',
+    url: base + '/reviews/meta?product_id=${productId}',
     url: `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/reviews/meta?product_id=${productId}`,
     headers: { Authorization: TOKEN },
   };
@@ -95,18 +97,144 @@ app.get('/detailState/*', async (req, res) => {
     res.send(err);
   }
 });
-// Router handler for processing api endpoints
-app.all('/api/*', (req, res) => {
-  let base = 'https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp';
+// // Router handler for processing api endpoints
+// app.all('/api/products/*', (req, res) => {
+//   let base = 'https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp';
+//   // let base = 'http://localhost:5000';
+//   let method = req.method;
+//   let url = req.url.substring(4);
+//   console.log('url', req.url);
+//   let query = req.query;
+
+//   base += url;
+//   let options = {
+//     method: req.method,
+//     url: base,
+//     headers: { Authorization: TOKEN },
+//     data: req.body,
+//   };
+
+//   axios(options)
+//     .then((results) => {
+//       // console.log('IN HERE', results.data);
+//       // console.log('======================');
+//       res.status(results.status).send(results.data);
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+// });
+
+// app.all('/api/reviews/*', (req, res) => {
+//   let base = 'https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp';
+//   // let base = 'http://localhost:5000';
+//   let method = req.method;
+//   let url = req.url.substring(4);
+//   console.log('url', req.url);
+//   let query = req.query;
+
+//   base += url;
+//   let options = {
+//     method: req.method,
+//     url: base,
+//     headers: { Authorization: TOKEN },
+//     data: req.body,
+//   };
+
+//   axios(options)
+//     .then((results) => {
+//       // console.log('IN HERE', results.data);
+//       // console.log('======================');
+//       res.status(results.status).send(results.data);
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+// });
+
+// get all questions; post new question
+app.all('/api/qa/questions', (req, res) => {
+  let base = 'http://3.145.54.218:5000';
   let method = req.method;
-  let url = req.url.substring(4);
   let query = req.query;
 
-  base += url;
+  base += req.url;
+  console.log('get questions url', base);
   let options = {
     method: req.method,
     url: base,
-    headers: { Authorization: TOKEN },
+    data: req.body,
+  };
+  console.log('options', options);
+  axios(options)
+    .then((results) => {
+      res.status(results.status).send(results.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+// get all answers, post new answer
+app.all('/api/qa/questions/:question_id/answers', (req, res) => {
+  let base = 'http://3.145.54.218:5000';
+  let method = req.method;
+  let query = req.query;
+
+  base += req.url;
+  console.log('get answers url', base);
+  let options = {
+    method: req.method,
+    url: base,
+    data: req.body,
+  };
+  if (req.method === 'POST') {
+    console.log('get post answers options', options);
+  }// data: body, name, email, photos
+  axios(options)
+    .then((results) => {
+      // console.log('IN HERE', results.data);
+      // console.log('======================');
+      res.status(results.status).send(results.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+// mark question helpful or reported
+app.put('/api/qa/questions/:question_id/*', (req, res) => {
+  let base = 'http://3.145.54.218:5000';
+  let method = req.method;
+  let query = req.query;
+
+  base += req.url;
+  console.log('put helpful questions url', base);
+  let options = {
+    method: req.method,
+    url: base,
+    data: req.body,
+  };
+  console.log('put ques options', options);
+  axios(options)
+    .then((results) => {
+      res.status(results.status).send(results.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+// mark answer helpful or reported
+app.put('/api/qa/answers/:answer_id/*', (req, res) => {
+  let base = 'http://3.145.54.218:5000';
+  let method = req.method;
+  let query = req.query;
+
+  base += req.url;
+  let options = {
+    method: req.method,
+    url: base,
     data: req.body,
   };
 
@@ -123,7 +251,7 @@ app.all('/api/*', (req, res) => {
 
 // Router for storing photos uploaded by user
 app.post('/photos', upload.array('photos', 5), (req, res) => {
-  console.log('react.files', req.files);
+  // console.log('react.files', req.files);
   for (let [i, photo] of req.files.entries()) {
     fs.readFile(photo.path, (err, data) => {
       if (err) {

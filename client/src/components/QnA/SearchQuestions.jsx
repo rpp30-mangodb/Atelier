@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import QuestionsList from './QuestionsList.jsx';
@@ -26,10 +27,12 @@ class SearchQuestions extends React.Component {
       page: 1,
       count: 100
     };
+    console.log(params);
     const body = formatBody(null, null, params);
 
-    axios.get('/api/qa/questions', body)
+    axios.get('api/qa/questions', body)
       .then((results) => {
+        console.log('question results', results);
         this.setState((state) => {
           const sortedData = results.data.results.sort((a, b) => {
             if (a.question_helpfulness > b.question_helpfulness) {
@@ -81,9 +84,9 @@ class SearchQuestions extends React.Component {
       email: email,
       product_id: this.props.productId
     };
-
+    console.log('add ques data', data);
     const body = this.props.formatBody(null, null, null, data);
-    axios.post('/api/qa/questions', body.data)
+    axios.post('api/qa/questions', body.data)
       .then((result) => {
         console.log('Successfully posted a new question', result.data);
       })
