@@ -2,6 +2,7 @@ import React from 'react';
 import './Reviews.css';
 
 let ReviewsRateDate = function(props) {
+  console.log('ReviewRate-->', props);
   let date = new Date(props.date.slice(0, 10));
   let starAndMonthTile = {
     '0': '☆☆☆☆☆', 'Jan': 'January', 'Jul': 'July',
